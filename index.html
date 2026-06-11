@@ -82,17 +82,6 @@
   .info-table td { padding: 7px 10px; border-bottom: 1px solid var(--sand-dark); vertical-align: top; }
   .info-table tr:last-child td { border-bottom: none; }
 
-  /* AI SUMMARY PANEL */
-  #ai-panel { display: none; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; }
-  #ai-panel.visible { display: block; }
-  .ai-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .ai-panel-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; }
-  .ai-panel-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 18px; line-height: 1; }
-  #ai-summary-text { font-size: 13px; line-height: 1.75; color: var(--text-primary); white-space: pre-wrap; }
-  .ai-loading { color: var(--text-muted); font-style: italic; font-size: 13px; }
-  .ai-copy-btn { margin-top: 14px; padding: 6px 14px; border-radius: 6px; background: var(--sand); border: 1px solid var(--border); font-family: 'DM Sans', sans-serif; font-size: 11px; cursor: pointer; color: var(--text-secondary); }
-  .ai-copy-btn:hover { border-color: var(--gold); color: var(--gold); }
-
   .results-info { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; padding-left: 2px; }
 
   /* MONTH SECTION */
@@ -212,10 +201,6 @@
       <button class="filter-reset" id="btn-reset">Limpiar</button>
     </div>
     <div class="action-btns">
-      <button class="btn-action primary" id="btn-ai">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-        Resumen IA
-      </button>
       <button class="btn-action" id="btn-export">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
         Exportar CSV
@@ -233,16 +218,6 @@
       <thead><tr><th>Nombre</th><th>Fecha</th><th>Hab.</th><th>Teléfono</th><th>Comentario</th></tr></thead>
       <tbody id="info-table-body"></tbody>
     </table>
-  </div>
-
-  <!-- AI SUMMARY PANEL -->
-  <div id="ai-panel">
-    <div class="ai-panel-header">
-      <div class="ai-panel-title" id="ai-panel-title">Resumen ejecutivo</div>
-      <button class="ai-panel-close" id="btn-close-ai">×</button>
-    </div>
-    <div id="ai-summary-text" class="ai-loading">Generando resumen…</div>
-    <button class="ai-copy-btn" id="btn-copy-ai">Copiar texto</button>
   </div>
 
   <div class="results-info" id="results-info"></div>
@@ -352,10 +327,10 @@ async function loadData() {
     const areaSelect = document.getElementById('filter-area');
     areas.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; areaSelect.appendChild(o); });
 
-    // Populate month filter — no "Todos"
+    // Populate month filter — "Todos" first, then months newest→oldest
     const monthKeys = [...new Set(allRows.map(r => monthKey(r)).filter(Boolean))];
     const mesSelect = document.getElementById('filter-mes');
-    mesSelect.innerHTML = '';
+    mesSelect.innerHTML = '<option value="">Todos los meses</option>';
     monthKeys.forEach(key => {
       const [y, m] = key.split('-');
       const o = document.createElement('option'); o.value = key;
@@ -368,13 +343,6 @@ async function loadData() {
     document.getElementById('last-updated').textContent = allRows[0]?.fecha ? 'Última entrada: ' + allRows[0].fecha : '';
 
     applyFilters();
-
-    // Background translations
-    for (const row of allRows) {
-      if (isEnglish(row.comment)) {
-        translateText(row.comment).then(t => { if (t) { row.translated = t; refreshTranslation(row); } });
-      }
-    }
 
   } catch(err) {
     document.getElementById('main-content').innerHTML = '<div class="error-state">Error al cargar datos: ' + err.message + '</div>';
@@ -546,8 +514,8 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   const now = new Date();
   const curKey = now.getFullYear() + '-' + String(now.getMonth()).padStart(2,'0');
   const mesSelect = document.getElementById('filter-mes');
-  const keys = [...mesSelect.options].map(o => o.value);
-  mesSelect.value = keys.includes(curKey) ? curKey : keys[0];
+  const keys = [...mesSelect.options].map(o => o.value).filter(Boolean);
+  mesSelect.value = keys.includes(curKey) ? curKey : (keys[0] || '');
   applyFilters();
 });
 
@@ -567,70 +535,6 @@ document.getElementById('kpi-info-card').addEventListener('click', () => {
 });
 document.getElementById('btn-close-info').addEventListener('click', () =>
   document.getElementById('info-panel').classList.remove('visible'));
-
-// ── AI SUMMARY ───────────────────────────────────────────────
-document.getElementById('btn-ai').addEventListener('click', async () => {
-  const panel = document.getElementById('ai-panel');
-  panel.classList.add('visible');
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  const mesLabel = document.getElementById('filter-mes').selectedOptions[0]?.textContent || 'el período';
-  document.getElementById('ai-panel-title').textContent = 'Resumen ejecutivo · ' + mesLabel;
-  const summaryEl = document.getElementById('ai-summary-text');
-  summaryEl.textContent = 'Generando resumen…';
-  summaryEl.className = 'ai-loading';
-
-  const rows = currentFiltered;
-  if (!rows.length) { summaryEl.textContent = 'No hay datos para resumir.'; summaryEl.className = ''; return; }
-
-  const scores = rows.map(r => parseFloat(r.score)).filter(n => !isNaN(n) && n > 0);
-  const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : 'N/D';
-  const recs = rows.filter(r => r.recom.toLowerCase().replace('í','i') === 'si').length;
-  const pos = rows.filter(r => r.senti.toLowerCase().includes('positivo')).length;
-  const neg = rows.filter(r => r.senti.toLowerCase().includes('negativo')).length;
-  const comments = rows.filter(r => r.comment).map(r => '- [' + (r.senti||'?') + '] ' + r.comment).join('\n');
-
-  const prompt = `Eres el gerente de operaciones de Casa Yuma, un hotel boutique de playa en Puerto Escondido, Oaxaca. Analiza las siguientes encuestas de satisfacción de ${mesLabel} y genera un resumen ejecutivo breve en español para compartir con el equipo.
-
-DATOS DEL PERÍODO:
-- Total huéspedes: ${rows.length}
-- Score promedio: ${avg}/8
-- Recomendarían: ${Math.round(recs/rows.length*100)}%
-- Comentarios positivos: ${pos} | Negativos: ${neg}
-
-COMENTARIOS:
-${comments}
-
-Genera un resumen de 3 secciones:
-1. Panorama general del mes (2-3 oraciones)
-2. Puntos destacados positivos (bullet points)
-3. Áreas de mejora o atención (bullet points)
-
-Sé directo y accionable. Máximo 250 palabras.`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, messages: [{ role: 'user', content: prompt }] })
-    });
-    const data = await res.json();
-    const text = data?.content?.[0]?.text || 'No se pudo generar el resumen.';
-    summaryEl.textContent = text;
-    summaryEl.className = '';
-  } catch(e) {
-    summaryEl.textContent = 'Error al conectar con el servicio de IA.';
-    summaryEl.className = '';
-  }
-});
-document.getElementById('btn-close-ai').addEventListener('click', () =>
-  document.getElementById('ai-panel').classList.remove('visible'));
-document.getElementById('btn-copy-ai').addEventListener('click', () => {
-  const text = document.getElementById('ai-summary-text').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('btn-copy-ai');
-    btn.textContent = '¡Copiado!'; setTimeout(() => btn.textContent = 'Copiar texto', 2000);
-  });
-});
 
 // ── EXPORT CSV ───────────────────────────────────────────────
 document.getElementById('btn-export').addEventListener('click', () => {
