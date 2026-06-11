@@ -72,17 +72,18 @@
 
   /* CARDS */
   .cards-grid { display: flex; flex-direction: column; gap: 8px; }
-  .card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; display: grid; grid-template-columns: 160px 1fr auto; gap: 16px; align-items: start; transition: border-color 0.15s; }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: start; transition: border-color 0.15s; }
   .card:hover { border-color: var(--gold-light); }
   .card.negative { border-left: 3px solid #C07055; }
   .card.positive { border-left: 3px solid var(--teal-light); }
   .card.neutral { border-left: 3px solid var(--border); }
 
-  .card-left { display: flex; flex-direction: column; gap: 4px; }
-  .guest-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
+  .card-left { display: flex; flex-direction: column; gap: 2px; min-width: 140px; max-width: 200px; }
+  .card-left-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+  .guest-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--text-primary); line-height: 1.2; white-space: nowrap; }
   .card-date { font-size: 11px; color: var(--text-muted); }
   .card-room { font-size: 11px; color: var(--text-secondary); }
-  .card-ratings { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+  .card-ratings { display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
   .rating-pill { font-size: 10px; padding: 2px 7px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); background: var(--sand); white-space: nowrap; }
   .rating-pill.bueno { background: #FFF8EA; border-color: #D4A84B; color: #7A5E1A; }
   .rating-pill.malo { background: var(--negative-bg); border-color: #C0674A; color: var(--negative-text); }
@@ -148,6 +149,9 @@
   </div>
 
   <div class="filters">
+    <div class="filter-group"><label class="filter-label">Mes</label>
+      <select id="filter-mes"><option value="">Todos</option></select>
+    </div>
     <div class="filter-group"><label class="filter-label">Sentimiento</label>
       <select id="filter-sentimiento"><option value="">Todos</option><option value="Positivo">Positivo</option><option value="Negativo">Negativo</option><option value="Sin comentario">Sin comentario</option></select>
     </div>
@@ -276,10 +280,30 @@ async function loadData() {
         translated: null
       }));
 
+    // Sort oldest-first within each date (chronological within month)
+    allRows.sort((a, b) => {
+      const da = parseDate(a.fecha), db = parseDate(b.fecha);
+      return (db || 0) - (da || 0); // newest month first overall
+    });
+
     // Populate area filter
     const areas = [...new Set(allRows.map(r => r.area).filter(Boolean))].sort();
     const areaSelect = document.getElementById('filter-area');
     areas.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; areaSelect.appendChild(o); });
+
+    // Populate month filter (newest first)
+    const monthKeys = [...new Set(allRows.map(r => {
+      const d = parseDate(r.fecha); if (!d) return null;
+      return d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
+    }).filter(Boolean))];
+    const mesSelect = document.getElementById('filter-mes');
+    monthKeys.forEach(key => {
+      const [y, m] = key.split('-');
+      const o = document.createElement('option');
+      o.value = key;
+      o.textContent = MESES[+m] + ' ' + y;
+      mesSelect.appendChild(o);
+    });
 
     updateKPIs(allRows);
     renderAll(allRows);
@@ -338,7 +362,7 @@ function renderAll(rows) {
     return;
   }
 
-  // Group by month-year, newest first
+  // Group by month-year, newest month first, oldest day first within month
   const groups = {};
   rows.forEach(r => {
     const d = parseDate(r.fecha);
@@ -347,6 +371,11 @@ function renderAll(rows) {
     if (!groups[key]) groups[key] = { label: MESES[d.getMonth()] + ' ' + d.getFullYear(), rows: [] };
     groups[key].rows.push(r);
   });
+  // Sort rows within each month oldest → newest
+  Object.values(groups).forEach(g => g.rows.sort((a, b) => {
+    const da = parseDate(a.fecha), db = parseDate(b.fecha);
+    return (da || 0) - (db || 0);
+  }));
   const sortedKeys = Object.keys(groups).sort((a,b) => b.localeCompare(a));
 
   main.innerHTML = sortedKeys.map(key => {
@@ -392,8 +421,7 @@ function cardHTML(r) {
   return '<div class="card ' + sentClass + '" data-key="' + (r.nombre + '|' + r.fecha).replace(/"/g,'') + '">' +
     '<div class="card-left">' +
       '<div class="guest-name">' + (r.nombre || 'Huésped') + '</div>' +
-      '<div class="card-date">' + r.fecha + '</div>' +
-      (r.hab ? '<div class="card-room">Hab. ' + r.hab + '</div>' : '') +
+      '<div class="card-date">' + r.fecha + (r.hab ? ' · Hab. ' + r.hab : '') + '</div>' +
       '<div class="card-ratings">' +
         pill('Servicio', r.servicio) + pill('Limpieza', r.limpieza) +
         pill('Mant.', r.mant) + pill('Inst.', r.inst) +
@@ -422,11 +450,17 @@ function applyFilters() {
   const a = document.getElementById('filter-area').value.toLowerCase();
   const sc = parseFloat(document.getElementById('filter-score').value) || 0;
   const q = document.getElementById('filter-search').value.toLowerCase().trim();
+  const mes = document.getElementById('filter-mes').value;
   const filtered = allRows.filter(r => {
     if (s && !r.senti.toLowerCase().includes(s.split(' ')[0])) return false;
     if (a && r.area.toLowerCase() !== a) return false;
     if (sc) { const v = parseFloat(r.score); if (isNaN(v) || v < sc) return false; }
     if (q && !r.nombre.toLowerCase().includes(q) && !r.comment.toLowerCase().includes(q)) return false;
+    if (mes) {
+      const d = parseDate(r.fecha); if (!d) return false;
+      const key = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
+      if (key !== mes) return false;
+    }
     return true;
   });
   updateKPIs(filtered);
@@ -436,9 +470,10 @@ function applyFilters() {
 document.getElementById('filter-sentimiento').addEventListener('change', applyFilters);
 document.getElementById('filter-area').addEventListener('change', applyFilters);
 document.getElementById('filter-score').addEventListener('change', applyFilters);
+document.getElementById('filter-mes').addEventListener('change', applyFilters);
 document.getElementById('filter-search').addEventListener('input', applyFilters);
 document.getElementById('btn-reset').addEventListener('click', () => {
-  ['filter-sentimiento','filter-area','filter-score'].forEach(id => document.getElementById(id).value = '');
+  ['filter-sentimiento','filter-area','filter-score','filter-mes'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('filter-search').value = '';
   updateKPIs(allRows);
   renderAll(allRows);
