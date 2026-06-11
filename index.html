@@ -72,18 +72,17 @@
 
   /* CARDS */
   .cards-grid { display: flex; flex-direction: column; gap: 8px; }
-  .card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px; align-items: start; transition: border-color 0.15s; }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; display: grid; grid-template-columns: 190px 1fr auto; gap: 16px; align-items: start; transition: border-color 0.15s; }
   .card:hover { border-color: var(--gold-light); }
   .card.negative { border-left: 3px solid #C07055; }
   .card.positive { border-left: 3px solid var(--teal-light); }
   .card.neutral { border-left: 3px solid var(--border); }
 
-  .card-left { display: flex; flex-direction: column; gap: 2px; min-width: 140px; max-width: 200px; }
-  .card-left-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
-  .guest-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--text-primary); line-height: 1.2; white-space: nowrap; }
+  .card-left { display: flex; flex-direction: column; gap: 2px; }
+  .guest-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
   .card-date { font-size: 11px; color: var(--text-muted); }
   .card-room { font-size: 11px; color: var(--text-secondary); }
-  .card-ratings { display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .card-ratings { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 4px; margin-top: 6px; overflow: hidden; }
   .rating-pill { font-size: 10px; padding: 2px 7px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); background: var(--sand); white-space: nowrap; }
   .rating-pill.bueno { background: #FFF8EA; border-color: #D4A84B; color: #7A5E1A; }
   .rating-pill.malo { background: var(--negative-bg); border-color: #C0674A; color: var(--negative-text); }
@@ -422,12 +421,12 @@ function cardHTML(r) {
     '<div class="card-left">' +
       '<div class="guest-name">' + (r.nombre || 'Huésped') + '</div>' +
       '<div class="card-date">' + r.fecha + (r.hab ? ' · Hab. ' + r.hab : '') + '</div>' +
+    '</div>' +
+    '<div class="card-middle">' +
       '<div class="card-ratings">' +
         pill('Servicio', r.servicio) + pill('Limpieza', r.limpieza) +
         pill('Mant.', r.mant) + pill('Inst.', r.inst) +
       '</div>' +
-    '</div>' +
-    '<div class="card-middle">' +
       (r.comment
         ? '<div class="comment-text">"' + r.comment + '"</div>' +
           '<div class="comment-translated" style="display:' + showTranslated + '">' + translatedText + '</div>'
