@@ -19,7 +19,7 @@
   }
   body { font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--text-primary); font-size: 13px; line-height: 1.5; min-height: 100vh; }
 
-  /* LOCK SCREEN */
+  /* LOCK */
   #lock-screen { position: fixed; inset: 0; background: var(--text-primary); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; gap: 24px; }
   #lock-screen.hidden { display: none; }
   .lock-logo { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 400; color: var(--gold-light); letter-spacing: 0.06em; text-align: center; }
@@ -41,22 +41,57 @@
   .container { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
 
   /* KPI BAR */
-  .kpi-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
-  .kpi-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center; }
+  .kpi-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .kpi-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center; position: relative; }
   .kpi-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
   .kpi-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--text-primary); line-height: 1; }
   .kpi-value.gold { color: var(--gold); }
   .kpi-value.teal { color: var(--teal); }
+  .kpi-trend { font-size: 11px; margin-top: 4px; }
+  .kpi-trend.up { color: var(--teal); }
+  .kpi-trend.down { color: #C07055; }
+  .kpi-trend.flat { color: var(--text-muted); }
 
-  /* FILTERS */
-  .filters { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+  /* TOOLBAR: filters + action buttons */
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+  .filters { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; flex: 1; }
   .filter-group { display: flex; align-items: center; gap: 7px; }
   .filter-label { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
   select, input[type="text"] { border: 1px solid var(--border); border-radius: 6px; background: var(--sand); color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 5px 9px; cursor: pointer; outline: none; }
   select:focus, input[type="text"]:focus { border-color: var(--gold); }
-  input[type="text"] { width: 180px; }
-  .filter-reset { margin-left: auto; font-size: 11px; color: var(--text-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+  input[type="text"] { width: 160px; }
+  .filter-reset { font-size: 11px; color: var(--text-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; background: none; border: none; font-family: 'DM Sans', sans-serif; white-space: nowrap; }
   .filter-reset:hover { color: var(--gold); }
+
+  /* ACTION BUTTONS */
+  .action-btns { display: flex; gap: 8px; flex-shrink: 0; }
+  .btn-action { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--text-secondary); transition: all 0.15s; white-space: nowrap; }
+  .btn-action:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-action.primary { background: var(--text-primary); color: var(--gold-light); border-color: var(--text-primary); }
+  .btn-action.primary:hover { background: #3A3020; }
+  .btn-action svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  /* DESEA INFO PANEL */
+  #info-panel { display: none; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; margin-bottom: 18px; }
+  #info-panel.visible { display: block; }
+  .info-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .info-panel-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; }
+  .info-panel-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 18px; line-height: 1; }
+  .info-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .info-table th { text-align: left; padding: 6px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); border-bottom: 1px solid var(--border); font-weight: 500; }
+  .info-table td { padding: 7px 10px; border-bottom: 1px solid var(--sand-dark); vertical-align: top; }
+  .info-table tr:last-child td { border-bottom: none; }
+
+  /* AI SUMMARY PANEL */
+  #ai-panel { display: none; background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 18px; }
+  #ai-panel.visible { display: block; }
+  .ai-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .ai-panel-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; }
+  .ai-panel-close { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 18px; line-height: 1; }
+  #ai-summary-text { font-size: 13px; line-height: 1.75; color: var(--text-primary); white-space: pre-wrap; }
+  .ai-loading { color: var(--text-muted); font-style: italic; font-size: 13px; }
+  .ai-copy-btn { margin-top: 14px; padding: 6px 14px; border-radius: 6px; background: var(--sand); border: 1px solid var(--border); font-family: 'DM Sans', sans-serif; font-size: 11px; cursor: pointer; color: var(--text-secondary); }
+  .ai-copy-btn:hover { border-color: var(--gold); color: var(--gold); }
 
   .results-info { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; padding-left: 2px; }
 
@@ -64,10 +99,12 @@
   .month-section { margin-bottom: 28px; }
   .month-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
   .month-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--text-primary); }
-  .month-stats { display: flex; gap: 10px; align-items: center; }
+  .month-stats { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .month-pill { font-size: 11px; padding: 2px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); background: var(--sand); white-space: nowrap; }
   .month-pill.pos { background: var(--positive-bg); border-color: #A0CFC8; color: var(--positive-text); }
   .month-pill.neg { background: var(--negative-bg); border-color: #C0A090; color: var(--negative-text); }
+  .month-pill.trend-up { background: var(--teal-pale); border-color: var(--teal-light); color: var(--teal); }
+  .month-pill.trend-down { background: var(--negative-bg); border-color: #C0A090; color: var(--negative-text); }
   .month-divider { flex: 1; height: 1px; background: var(--border); }
 
   /* CARDS */
@@ -81,17 +118,16 @@
   .card-left { display: flex; flex-direction: column; gap: 2px; }
   .guest-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
   .card-date { font-size: 11px; color: var(--text-muted); }
-  .card-room { font-size: 11px; color: var(--text-secondary); }
-  .card-ratings { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 4px; margin-top: 6px; overflow: hidden; }
-  .rating-pill { font-size: 10px; padding: 2px 7px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); background: var(--sand); white-space: nowrap; }
+
+  .card-middle { display: flex; flex-direction: column; gap: 5px; }
+  .card-ratings { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 4px; }
+  .rating-pill { font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-secondary); background: var(--sand); white-space: nowrap; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
   .rating-pill.bueno { background: #FFF8EA; border-color: #D4A84B; color: #7A5E1A; }
   .rating-pill.malo { background: var(--negative-bg); border-color: #C0674A; color: var(--negative-text); }
-
-  .card-middle { display: flex; flex-direction: column; gap: 6px; }
-  .comment-text { font-size: 13px; color: var(--text-primary); line-height: 1.6; font-style: italic; font-family: 'Cormorant Garamond', serif; }
-  .comment-translated { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-style: italic; }
-  .tags-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
-  .tag { font-size: 10px; padding: 2px 9px; border-radius: 20px; border: 1px solid transparent; font-family: 'DM Sans', sans-serif; }
+  .comment-text { font-size: 13px; color: var(--text-primary); line-height: 1.65; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+  .comment-translated { font-size: 11px; color: var(--text-muted); font-style: italic; padding-left: 4px; border-left: 2px solid var(--border); }
+  .tags-row { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag { font-size: 10px; padding: 2px 9px; border-radius: 20px; border: 1px solid transparent; }
   .tag.area { background: var(--teal-pale); border-color: #A0CFC8; color: var(--positive-text); }
   .tag.area-secondary { background: var(--gold-pale); border-color: #D4B483; color: #6B4E1A; }
 
@@ -114,7 +150,9 @@
     .container { padding: 16px 12px; }
     .card { grid-template-columns: 1fr; gap: 10px; }
     .card-right { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
-    input[type="text"] { width: 130px; }
+    input[type="text"] { width: 120px; }
+    .action-btns { width: 100%; }
+    .btn-action { flex: 1; justify-content: center; }
   }
 </style>
 </head>
@@ -139,31 +177,72 @@
 </header>
 
 <div class="container">
+
+  <!-- KPI BAR -->
   <div class="kpi-bar">
-    <div class="kpi-card"><div class="kpi-label">Total respuestas</div><div class="kpi-value" id="kpi-total">—</div></div>
-    <div class="kpi-card"><div class="kpi-label">Score promedio</div><div class="kpi-value gold" id="kpi-score">—</div></div>
-    <div class="kpi-card"><div class="kpi-label">Nos recomendarían</div><div class="kpi-value teal" id="kpi-recomienda">—</div></div>
-    <div class="kpi-card"><div class="kpi-label">Comentarios positivos</div><div class="kpi-value" id="kpi-positivos">—</div></div>
-    <div class="kpi-card"><div class="kpi-label">Comentarios negativos</div><div class="kpi-value" id="kpi-negativos">—</div></div>
+    <div class="kpi-card"><div class="kpi-label">Respuestas</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-trend" id="kpi-total-trend"></div></div>
+    <div class="kpi-card"><div class="kpi-label">Score promedio</div><div class="kpi-value gold" id="kpi-score">—</div><div class="kpi-trend" id="kpi-score-trend"></div></div>
+    <div class="kpi-card"><div class="kpi-label">Recomendarían</div><div class="kpi-value teal" id="kpi-recomienda">—</div><div class="kpi-trend" id="kpi-rec-trend"></div></div>
+    <div class="kpi-card"><div class="kpi-label">Positivos</div><div class="kpi-value" id="kpi-positivos">—</div></div>
+    <div class="kpi-card"><div class="kpi-label">Negativos</div><div class="kpi-value" id="kpi-negativos">—</div></div>
+    <div class="kpi-card" style="cursor:pointer" id="kpi-info-card" title="Ver lista">
+      <div class="kpi-label">Quieren info de regreso</div>
+      <div class="kpi-value" id="kpi-desea">—</div>
+    </div>
   </div>
 
-  <div class="filters">
-    <div class="filter-group"><label class="filter-label">Mes</label>
-      <select id="filter-mes"><option value="">Todos</option></select>
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="filters">
+      <div class="filter-group"><label class="filter-label">Mes</label>
+        <select id="filter-mes"></select>
+      </div>
+      <div class="filter-group"><label class="filter-label">Sentimiento</label>
+        <select id="filter-sentimiento"><option value="">Todos</option><option value="Positivo">Positivo</option><option value="Negativo">Negativo</option><option value="Sin comentario">Sin comentario</option></select>
+      </div>
+      <div class="filter-group"><label class="filter-label">Área</label>
+        <select id="filter-area"><option value="">Todas</option></select>
+      </div>
+      <div class="filter-group"><label class="filter-label">Score mín.</label>
+        <select id="filter-score"><option value="">Cualquiera</option><option value="8">8</option><option value="7">7+</option><option value="6">6+</option></select>
+      </div>
+      <div class="filter-group"><label class="filter-label">Buscar</label>
+        <input type="text" id="filter-search" placeholder="Nombre o comentario…">
+      </div>
+      <button class="filter-reset" id="btn-reset">Limpiar</button>
     </div>
-    <div class="filter-group"><label class="filter-label">Sentimiento</label>
-      <select id="filter-sentimiento"><option value="">Todos</option><option value="Positivo">Positivo</option><option value="Negativo">Negativo</option><option value="Sin comentario">Sin comentario</option></select>
+    <div class="action-btns">
+      <button class="btn-action primary" id="btn-ai">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+        Resumen IA
+      </button>
+      <button class="btn-action" id="btn-export">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        Exportar CSV
+      </button>
     </div>
-    <div class="filter-group"><label class="filter-label">Área</label>
-      <select id="filter-area"><option value="">Todas</option></select>
+  </div>
+
+  <!-- DESEA INFO PANEL -->
+  <div id="info-panel">
+    <div class="info-panel-header">
+      <div class="info-panel-title" id="info-panel-title">Huéspedes que desean información de regreso</div>
+      <button class="info-panel-close" id="btn-close-info">×</button>
     </div>
-    <div class="filter-group"><label class="filter-label">Score mín.</label>
-      <select id="filter-score"><option value="">Cualquiera</option><option value="8">8</option><option value="7">7+</option><option value="6">6+</option></select>
+    <table class="info-table">
+      <thead><tr><th>Nombre</th><th>Fecha</th><th>Hab.</th><th>Teléfono</th><th>Comentario</th></tr></thead>
+      <tbody id="info-table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- AI SUMMARY PANEL -->
+  <div id="ai-panel">
+    <div class="ai-panel-header">
+      <div class="ai-panel-title" id="ai-panel-title">Resumen ejecutivo</div>
+      <button class="ai-panel-close" id="btn-close-ai">×</button>
     </div>
-    <div class="filter-group"><label class="filter-label">Buscar</label>
-      <input type="text" id="filter-search" placeholder="Nombre o comentario…">
-    </div>
-    <button class="filter-reset" id="btn-reset">Limpiar filtros</button>
+    <div id="ai-summary-text" class="ai-loading">Generando resumen…</div>
+    <button class="ai-copy-btn" id="btn-copy-ai">Copiar texto</button>
   </div>
 
   <div class="results-info" id="results-info"></div>
@@ -172,47 +251,16 @@
 
 <script>
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmqLWbM4T9YiVuW5-bch21_FTuYbMIMqHuq1nsEzOKaqAOTT_R2Iyy0VtYsOmTOfQhqEcDwV90-UH-/pub?output=csv';
-
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-// Simple English detector: if >40% of word characters are ASCII letters and no Spanish-specific chars
-function isEnglish(text) {
-  if (!text || text.length < 10) return false;
-  const hasSpanish = /[áéíóúüñ¿¡]/i.test(text);
-  if (hasSpanish) return false;
-  const words = text.trim().split(/\s+/);
-  if (words.length < 3) return false;
-  const engWords = ['the','and','was','our','very','great','good','but','we','it','is','are','for','this','with','had','have','were','not','all','an','its','been','my','me','so','at','us','no','of','to','a','in','on','i'];
-  const lower = text.toLowerCase();
-  const matches = engWords.filter(w => new RegExp('\\b' + w + '\\b').test(lower)).length;
-  return matches >= 2;
-}
-
-async function translateText(text) {
-  if (!text || !isEnglish(text)) return null;
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 200,
-        messages: [{ role: 'user', content: 'Translate this hotel guest comment to Spanish. Return ONLY the translation, nothing else: ' + text }]
-      })
-    });
-    const data = await res.json();
-    return data?.content?.[0]?.text || null;
-  } catch { return null; }
-}
-
 let allRows = [];
+let currentFiltered = [];
 
+// ── CSV PARSER ──────────────────────────────────────────────
 function parseCSV(text) {
   const lines = text.split('\n');
-  const rows = [];
-  for (const line of lines) {
-    const cols = [];
-    let cur = '', inQ = false;
+  return lines.map(line => {
+    const cols = []; let cur = '', inQ = false;
     for (let j = 0; j < line.length; j++) {
       const ch = line[j];
       if (ch === '"') { inQ = !inQ; }
@@ -220,102 +268,111 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    rows.push(cols);
-  }
-  return rows;
+    return cols;
+  });
 }
 
+// ── DATE HELPERS ────────────────────────────────────────────
+function parseDate(str) {
+  const p = (str || '').split('/');
+  return p.length === 3 ? new Date(+p[2], +p[1]-1, +p[0]) : null;
+}
+function monthKey(row) {
+  const d = parseDate(row.fecha); if (!d) return null;
+  return d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
+}
+
+// ── ENGLISH DETECTION & TRANSLATION ────────────────────────
+function isEnglish(text) {
+  if (!text || text.length < 10) return false;
+  if (/[áéíóúüñ¿¡]/i.test(text)) return false;
+  const words = text.trim().split(/\s+/);
+  if (words.length < 3) return false;
+  const engWords = ['the','and','was','our','very','great','good','but','we','it','is','are','for','this','with','had','have','were','not','all','an','its','been','my','me','so','at','us','no','of','to','a','in','on','i','amazing','beautiful','wonderful','staff','room','beach','hotel','stay','loved'];
+  const lower = text.toLowerCase();
+  return engWords.filter(w => new RegExp('\\b' + w + '\\b').test(lower)).length >= 2;
+}
+async function translateText(text) {
+  if (!text || !isEnglish(text)) return null;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514', max_tokens: 200,
+        messages: [{ role: 'user', content: 'Translate this hotel guest comment to Spanish. Return ONLY the translation, nothing else: ' + text }]
+      })
+    });
+    const data = await res.json();
+    return data?.content?.[0]?.text || null;
+  } catch { return null; }
+}
+function refreshTranslation(row) {
+  document.querySelectorAll('.card').forEach(card => {
+    if (card.dataset.key === (row.nombre + '|' + row.fecha).replace(/"/g,'')) {
+      const el = card.querySelector('.comment-translated');
+      if (el && row.translated) { el.textContent = row.translated; el.style.display = 'block'; }
+    }
+  });
+}
+
+// ── LOAD DATA ───────────────────────────────────────────────
 async function loadData() {
   try {
     const res = await fetch(CSV_URL);
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const text = await res.text();
-    const rows = parseCSV(text);
-
-    // Row 4 (index 3) is the real header
+    const rows = parseCSV(await res.text());
     const headers = rows[3].map(h => h.toLowerCase().replace(/[\n\r]/g,' ').trim());
-
-    // Find column indices by keyword
-    const ci = (kw) => headers.findIndex(h => h.includes(kw));
+    const ci = kw => headers.findIndex(h => h.includes(kw));
     const COL = {
-      fecha:     ci('fecha'),
-      nombre:    ci('nombre'),
-      tel:       ci('tel'),
-      servicio:  ci('servicio'),
-      limpieza:  ci('limpieza'),
-      mant:      ci('mantenimiento'),
-      inst:      ci('instalaciones'),
-      desea:     ci('desea'),
-      recom:     ci('recomend'),
-      comment:   ci('comentario'),
-      hab:       ci('habitaci'),
-      score:     ci('score'),
-      senti:     ci('sentimiento'),
-      area:      ci('área del'),
-      area2:     ci('área\nsecundaria') >= 0 ? ci('área\nsecundaria') : headers.findIndex((h,i) => h.includes('secundaria') && i !== ci('sentimiento\nsecundario')),
-      senti2:    headers.findIndex(h => h.includes('sentimiento') && h.includes('secund'))
+      fecha: ci('fecha'), nombre: ci('nombre'), tel: ci('tel'),
+      servicio: ci('servicio'), limpieza: ci('limpieza'), mant: ci('mantenimiento'),
+      inst: ci('instalaciones'), desea: ci('desea'), recom: ci('recomend'),
+      comment: ci('comentario'), hab: ci('habitaci'), score: ci('score'),
+      senti: ci('sentimiento'), area: ci('área del'),
+      area2: headers.findIndex((h,i) => h.includes('secundaria') && !h.includes('sentimiento') && i > ci('área del'))
     };
-
-    // Data starts at row index 4, skip rows where fecha is not a date pattern
     const dateRe = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
     allRows = rows.slice(4)
       .filter(r => r[COL.fecha] && dateRe.test(r[COL.fecha].trim()))
       .map(r => ({
-        fecha:    r[COL.fecha]?.trim() || '',
-        nombre:   r[COL.nombre]?.trim() || '',
-        tel:      r[COL.tel]?.trim() || '',
-        servicio: r[COL.servicio]?.trim() || '',
-        limpieza: r[COL.limpieza]?.trim() || '',
-        mant:     r[COL.mant]?.trim() || '',
-        inst:     r[COL.inst]?.trim() || '',
-        desea:    r[COL.desea]?.trim() || '',
-        recom:    r[COL.recom]?.trim() || '',
-        comment:  r[COL.comment]?.trim() || '',
-        hab:      r[COL.hab]?.trim() || '',
-        score:    r[COL.score]?.trim() || '',
-        senti:    r[COL.senti]?.trim() || '',
-        area:     r[COL.area]?.trim() || '',
-        area2:    COL.area2 >= 0 ? r[COL.area2]?.trim() || '' : '',
+        fecha: r[COL.fecha]?.trim()||'', nombre: r[COL.nombre]?.trim()||'',
+        tel: r[COL.tel]?.trim()||'', servicio: r[COL.servicio]?.trim()||'',
+        limpieza: r[COL.limpieza]?.trim()||'', mant: r[COL.mant]?.trim()||'',
+        inst: r[COL.inst]?.trim()||'', desea: r[COL.desea]?.trim()||'',
+        recom: r[COL.recom]?.trim()||'', comment: r[COL.comment]?.trim()||'',
+        hab: r[COL.hab]?.trim()||'', score: r[COL.score]?.trim()||'',
+        senti: r[COL.senti]?.trim()||'', area: r[COL.area]?.trim()||'',
+        area2: COL.area2 >= 0 ? r[COL.area2]?.trim()||'' : '',
         translated: null
       }));
-
-    // Sort oldest-first within each date (chronological within month)
-    allRows.sort((a, b) => {
-      const da = parseDate(a.fecha), db = parseDate(b.fecha);
-      return (db || 0) - (da || 0); // newest month first overall
-    });
 
     // Populate area filter
     const areas = [...new Set(allRows.map(r => r.area).filter(Boolean))].sort();
     const areaSelect = document.getElementById('filter-area');
     areas.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; areaSelect.appendChild(o); });
 
-    // Populate month filter (newest first)
-    const monthKeys = [...new Set(allRows.map(r => {
-      const d = parseDate(r.fecha); if (!d) return null;
-      return d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
-    }).filter(Boolean))];
+    // Populate month filter — no "Todos"
+    const monthKeys = [...new Set(allRows.map(r => monthKey(r)).filter(Boolean))];
     const mesSelect = document.getElementById('filter-mes');
+    mesSelect.innerHTML = '';
     monthKeys.forEach(key => {
       const [y, m] = key.split('-');
-      const o = document.createElement('option');
-      o.value = key;
-      o.textContent = MESES[+m] + ' ' + y;
-      mesSelect.appendChild(o);
+      const o = document.createElement('option'); o.value = key;
+      o.textContent = MESES[+m] + ' ' + y; mesSelect.appendChild(o);
     });
+    const now = new Date();
+    const curKey = now.getFullYear() + '-' + String(now.getMonth()).padStart(2,'0');
+    mesSelect.value = monthKeys.includes(curKey) ? curKey : (monthKeys[0] || '');
 
-    updateKPIs(allRows);
-    renderAll(allRows);
+    document.getElementById('last-updated').textContent = allRows[0]?.fecha ? 'Última entrada: ' + allRows[0].fecha : '';
 
-    const lastDate = allRows[0]?.fecha || '';
-    document.getElementById('last-updated').textContent = lastDate ? 'Última entrada: ' + lastDate : '';
+    applyFilters();
 
-    // Translate English comments in background
+    // Background translations
     for (const row of allRows) {
       if (isEnglish(row.comment)) {
-        translateText(row.comment).then(t => {
-          if (t) { row.translated = t; refreshTranslation(row); }
-        });
+        translateText(row.comment).then(t => { if (t) { row.translated = t; refreshTranslation(row); } });
       }
     }
 
@@ -324,57 +381,79 @@ async function loadData() {
   }
 }
 
-function refreshTranslation(row) {
-  // Find the card by name+date and update translation span
-  const cards = document.querySelectorAll('.card');
-  cards.forEach(card => {
-    if (card.dataset.key === (row.nombre + '|' + row.fecha)) {
-      const el = card.querySelector('.comment-translated');
-      if (el && row.translated) { el.textContent = '↳ ' + row.translated; el.style.display = 'block'; }
-    }
-  });
-}
-
-function updateKPIs(rows) {
-  document.getElementById('kpi-total').textContent = rows.length;
+// ── MONTH STATS (for trend comparison) ─────────────────────
+function getMonthStats(key) {
+  const rows = allRows.filter(r => monthKey(r) === key);
   const scores = rows.map(r => parseFloat(r.score)).filter(n => !isNaN(n) && n > 0);
-  document.getElementById('kpi-score').textContent = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
   const recs = rows.filter(r => r.recom.toLowerCase().replace('í','i') === 'si').length;
-  document.getElementById('kpi-recomienda').textContent = rows.length ? Math.round(recs/rows.length*100)+'%' : '—';
-  document.getElementById('kpi-positivos').textContent = rows.filter(r => r.senti.toLowerCase().includes('positivo')).length;
-  document.getElementById('kpi-negativos').textContent = rows.filter(r => r.senti.toLowerCase().includes('negativo')).length;
+  return {
+    count: rows.length,
+    score: scores.length ? scores.reduce((a,b)=>a+b,0)/scores.length : null,
+    recPct: rows.length ? recs/rows.length*100 : null,
+    pos: rows.filter(r => r.senti.toLowerCase().includes('positivo')).length,
+    neg: rows.filter(r => r.senti.toLowerCase().includes('negativo')).length,
+    desea: rows.filter(r => r.desea.toLowerCase().includes('s')).length
+  };
 }
 
-function parseDate(str) {
-  const p = str.split('/');
-  if (p.length === 3) return new Date(+p[2], +p[1]-1, +p[0]);
-  return null;
+function prevMonthKey(key) {
+  const [y, m] = key.split('-').map(Number);
+  const d = new Date(y, m, 1); d.setMonth(d.getMonth() - 1);
+  return d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
 }
 
-function renderAll(rows) {
-  const info = document.getElementById('results-info');
-  const main = document.getElementById('main-content');
-  info.textContent = rows.length + (rows.length === 1 ? ' registro' : ' registros');
+// ── KPI UPDATE ──────────────────────────────────────────────
+function updateKPIs(rows) {
+  const curKey = document.getElementById('filter-mes').value;
+  const prevKey = prevMonthKey(curKey);
+  const prev = getMonthStats(prevKey);
+  const hasPrev = prev.count > 0;
 
-  if (!rows.length) {
-    main.innerHTML = '<div class="empty-state">No hay registros que coincidan.</div>';
-    return;
+  const scores = rows.map(r => parseFloat(r.score)).filter(n => !isNaN(n) && n > 0);
+  const avg = scores.length ? scores.reduce((a,b)=>a+b,0)/scores.length : null;
+  const recs = rows.filter(r => r.recom.toLowerCase().replace('í','i') === 'si').length;
+  const recPct = rows.length ? Math.round(recs/rows.length*100) : null;
+  const pos = rows.filter(r => r.senti.toLowerCase().includes('positivo')).length;
+  const neg = rows.filter(r => r.senti.toLowerCase().includes('negativo')).length;
+  const desea = rows.filter(r => r.desea.toLowerCase().includes('s')).length;
+
+  document.getElementById('kpi-total').textContent = rows.length;
+  document.getElementById('kpi-score').textContent = avg ? avg.toFixed(1) : '—';
+  document.getElementById('kpi-recomienda').textContent = recPct !== null ? recPct + '%' : '—';
+  document.getElementById('kpi-positivos').textContent = pos;
+  document.getElementById('kpi-negativos').textContent = neg;
+  document.getElementById('kpi-desea').textContent = desea;
+
+  function trendEl(id, cur, prevVal, unit='', higher=true) {
+    const el = document.getElementById(id); if (!el) return;
+    if (!hasPrev || prevVal === null || cur === null) { el.textContent = ''; return; }
+    const diff = cur - prevVal;
+    const better = higher ? diff > 0 : diff < 0;
+    const arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+    const cls = diff === 0 ? 'flat' : better ? 'up' : 'down';
+    const label = diff === 0 ? 'igual que ' + MESES[+prevKey.split('-')[1]] : arrow + ' ' + Math.abs(diff % 1 === 0 ? diff : parseFloat(diff.toFixed(1))) + unit + ' vs ' + MESES[+prevKey.split('-')[1]];
+    el.textContent = label; el.className = 'kpi-trend ' + cls;
   }
+  trendEl('kpi-total-trend', rows.length, prev.count, '');
+  trendEl('kpi-score-trend', avg, prev.score, ' pts');
+  trendEl('kpi-rec-trend', recPct, prev.recPct, '%');
+}
 
-  // Group by month-year, newest month first, oldest day first within month
+// ── RENDER ──────────────────────────────────────────────────
+function renderAll(rows) {
+  currentFiltered = rows;
+  document.getElementById('results-info').textContent = rows.length + (rows.length === 1 ? ' registro' : ' registros');
+  const main = document.getElementById('main-content');
+  if (!rows.length) { main.innerHTML = '<div class="empty-state">No hay registros que coincidan.</div>'; return; }
+
   const groups = {};
   rows.forEach(r => {
+    const key = monthKey(r); if (!key) return;
     const d = parseDate(r.fecha);
-    if (!d) return;
-    const key = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
-    if (!groups[key]) groups[key] = { label: MESES[d.getMonth()] + ' ' + d.getFullYear(), rows: [] };
+    if (!groups[key]) groups[key] = { label: MESES[d.getMonth()] + ' ' + d.getFullYear(), key, rows: [] };
     groups[key].rows.push(r);
   });
-  // Sort rows within each month oldest → newest
-  Object.values(groups).forEach(g => g.rows.sort((a, b) => {
-    const da = parseDate(a.fecha), db = parseDate(b.fecha);
-    return (da || 0) - (db || 0);
-  }));
+  Object.values(groups).forEach(g => g.rows.sort((a,b) => (parseDate(a.fecha)||0)-(parseDate(b.fecha)||0)));
   const sortedKeys = Object.keys(groups).sort((a,b) => b.localeCompare(a));
 
   main.innerHTML = sortedKeys.map(key => {
@@ -383,7 +462,15 @@ function renderAll(rows) {
     const neg = g.rows.filter(r => r.senti.toLowerCase().includes('negativo')).length;
     const scores = g.rows.map(r => parseFloat(r.score)).filter(n => !isNaN(n) && n > 0);
     const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '';
-
+    const prev = getMonthStats(prevMonthKey(key));
+    let trendPill = '';
+    if (prev.count > 0 && avg && prev.score) {
+      const diff = parseFloat(avg) - prev.score;
+      if (Math.abs(diff) >= 0.1) {
+        const cls = diff > 0 ? 'trend-up' : 'trend-down';
+        trendPill = '<span class="month-pill ' + cls + '">' + (diff > 0 ? '↑' : '↓') + ' ' + Math.abs(diff.toFixed(1)) + ' vs ' + MESES[+prevMonthKey(key).split('-')[1]] + '</span>';
+      }
+    }
     return '<div class="month-section">' +
       '<div class="month-header">' +
         '<div class="month-title">' + g.label + '</div>' +
@@ -392,6 +479,7 @@ function renderAll(rows) {
           (avg ? '<span class="month-pill">⌀ ' + avg + '/8</span>' : '') +
           (pos ? '<span class="month-pill pos">' + pos + ' positivos</span>' : '') +
           (neg ? '<span class="month-pill neg">' + neg + ' negativos</span>' : '') +
+          trendPill +
         '</div>' +
         '<div class="month-divider"></div>' +
       '</div>' +
@@ -405,45 +493,32 @@ function cardHTML(r) {
   const sentClass = sentLow.includes('positivo') ? 'positive' : sentLow.includes('negativo') ? 'negative' : 'neutral';
   const sentBadge = sentLow.includes('positivo') ? 'positivo' : sentLow.includes('negativo') ? 'negativo' : 'sin';
   const sentLabel = sentLow.includes('positivo') ? 'Positivo' : sentLow.includes('negativo') ? 'Negativo' : 'Sin sentimiento';
-
   const pill = (lbl, val) => {
     if (!val) return '';
     const lo = val.toLowerCase();
     const cls = lo === 'bueno' ? 'bueno' : lo === 'malo' ? 'malo' : '';
     return '<span class="rating-pill ' + cls + '">' + lbl + ': ' + val + '</span>';
   };
-
   const recClass = r.recom.toLowerCase().replace('í','i') === 'si' ? 'si' : '';
-  const showTranslated = r.translated ? 'block' : 'none';
-  const translatedText = r.translated ? '↳ ' + r.translated : '';
-
-  return '<div class="card ' + sentClass + '" data-key="' + (r.nombre + '|' + r.fecha).replace(/"/g,'') + '">' +
+  return '<div class="card ' + sentClass + '" data-key="' + (r.nombre+'|'+r.fecha).replace(/"/g,'') + '">' +
     '<div class="card-left">' +
-      '<div class="guest-name">' + (r.nombre || 'Huésped') + '</div>' +
-      '<div class="card-date">' + r.fecha + (r.hab ? ' · Hab. ' + r.hab : '') + '</div>' +
+      '<div class="guest-name">' + (r.nombre||'Huésped') + '</div>' +
+      '<div class="card-date">' + r.fecha + (r.hab ? ' · Hab. '+r.hab : '') + '</div>' +
     '</div>' +
     '<div class="card-middle">' +
-      '<div class="card-ratings">' +
-        pill('Servicio', r.servicio) + pill('Limpieza', r.limpieza) +
-        pill('Mant.', r.mant) + pill('Inst.', r.inst) +
-      '</div>' +
-      (r.comment
-        ? '<div class="comment-text">"' + r.comment + '"</div>' +
-          '<div class="comment-translated" style="display:' + showTranslated + '">' + translatedText + '</div>'
-        : '') +
-      '<div class="tags-row">' +
-        (r.area ? '<span class="tag area">' + r.area + '</span>' : '') +
-        (r.area2 ? '<span class="tag area-secondary">' + r.area2 + '</span>' : '') +
-      '</div>' +
+      '<div class="card-ratings">' + pill('Servicio',r.servicio) + pill('Limpieza',r.limpieza) + pill('Mant.',r.mant) + pill('Inst.',r.inst) + '</div>' +
+      (r.comment ? '<div class="comment-text">"' + r.comment + '"</div><div class="comment-translated" style="display:' + (r.translated?'block':'none') + '">' + (r.translated||'') + '</div>' : '') +
+      '<div class="tags-row">' + (r.area?'<span class="tag area">'+r.area+'</span>':'') + (r.area2?'<span class="tag area-secondary">'+r.area2+'</span>':'') + '</div>' +
     '</div>' +
     '<div class="card-right">' +
-      (r.score && parseFloat(r.score) > 0 ? '<div class="score-badge">' + r.score + '<span>/8</span></div>' : '') +
+      (r.score && parseFloat(r.score)>0 ? '<div class="score-badge">'+r.score+'<span>/8</span></div>' : '') +
       '<span class="sentiment-badge ' + sentBadge + '">' + sentLabel + '</span>' +
-      (r.recom ? '<div class="recomienda-row ' + recClass + '">Recomendaría: ' + r.recom + '</div>' : '') +
+      (r.recom ? '<div class="recomienda-row '+recClass+'">Recomendaría: '+r.recom+'</div>' : '') +
     '</div>' +
   '</div>';
 }
 
+// ── FILTERS ─────────────────────────────────────────────────
 function applyFilters() {
   const s = document.getElementById('filter-sentimiento').value.toLowerCase();
   const a = document.getElementById('filter-area').value.toLowerCase();
@@ -453,59 +528,150 @@ function applyFilters() {
   const filtered = allRows.filter(r => {
     if (s && !r.senti.toLowerCase().includes(s.split(' ')[0])) return false;
     if (a && r.area.toLowerCase() !== a) return false;
-    if (sc) { const v = parseFloat(r.score); if (isNaN(v) || v < sc) return false; }
+    if (sc) { const v = parseFloat(r.score); if (isNaN(v)||v<sc) return false; }
     if (q && !r.nombre.toLowerCase().includes(q) && !r.comment.toLowerCase().includes(q)) return false;
-    if (mes) {
-      const d = parseDate(r.fecha); if (!d) return false;
-      const key = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
-      if (key !== mes) return false;
-    }
+    if (mes) { const k = monthKey(r); if (k !== mes) return false; }
     return true;
   });
   updateKPIs(filtered);
   renderAll(filtered);
 }
 
-document.getElementById('filter-sentimiento').addEventListener('change', applyFilters);
-document.getElementById('filter-area').addEventListener('change', applyFilters);
-document.getElementById('filter-score').addEventListener('change', applyFilters);
-document.getElementById('filter-mes').addEventListener('change', applyFilters);
+['filter-sentimiento','filter-area','filter-score','filter-mes'].forEach(id =>
+  document.getElementById(id).addEventListener('change', applyFilters));
 document.getElementById('filter-search').addEventListener('input', applyFilters);
 document.getElementById('btn-reset').addEventListener('click', () => {
-  ['filter-sentimiento','filter-area','filter-score','filter-mes'].forEach(id => document.getElementById(id).value = '');
+  ['filter-sentimiento','filter-area','filter-score'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('filter-search').value = '';
-  updateKPIs(allRows);
-  renderAll(allRows);
+  const now = new Date();
+  const curKey = now.getFullYear() + '-' + String(now.getMonth()).padStart(2,'0');
+  const mesSelect = document.getElementById('filter-mes');
+  const keys = [...mesSelect.options].map(o => o.value);
+  mesSelect.value = keys.includes(curKey) ? curKey : keys[0];
+  applyFilters();
 });
 
-// PASSWORD
+// ── DESEA INFO PANEL ─────────────────────────────────────────
+document.getElementById('kpi-info-card').addEventListener('click', () => {
+  const mes = document.getElementById('filter-mes').value;
+  const rows = currentFiltered.filter(r => r.desea.toLowerCase().includes('s'));
+  const tbody = document.getElementById('info-table-body');
+  const mesLabel = mes ? (' — ' + document.getElementById('filter-mes').selectedOptions[0]?.textContent) : '';
+  document.getElementById('info-panel-title').textContent = 'Huéspedes que desean información de regreso' + mesLabel;
+  tbody.innerHTML = rows.length
+    ? rows.map(r => '<tr><td>' + r.nombre + '</td><td>' + r.fecha + '</td><td>' + (r.hab||'—') + '</td><td>' + (r.tel||'—') + '</td><td style="max-width:300px;font-style:italic;color:var(--text-secondary)">' + (r.comment||'—') + '</td></tr>').join('')
+    : '<tr><td colspan="5" style="color:var(--text-muted);text-align:center;padding:20px">Ninguno en el período seleccionado</td></tr>';
+  const panel = document.getElementById('info-panel');
+  panel.classList.toggle('visible');
+  if (panel.classList.contains('visible')) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+document.getElementById('btn-close-info').addEventListener('click', () =>
+  document.getElementById('info-panel').classList.remove('visible'));
+
+// ── AI SUMMARY ───────────────────────────────────────────────
+document.getElementById('btn-ai').addEventListener('click', async () => {
+  const panel = document.getElementById('ai-panel');
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const mesLabel = document.getElementById('filter-mes').selectedOptions[0]?.textContent || 'el período';
+  document.getElementById('ai-panel-title').textContent = 'Resumen ejecutivo · ' + mesLabel;
+  const summaryEl = document.getElementById('ai-summary-text');
+  summaryEl.textContent = 'Generando resumen…';
+  summaryEl.className = 'ai-loading';
+
+  const rows = currentFiltered;
+  if (!rows.length) { summaryEl.textContent = 'No hay datos para resumir.'; summaryEl.className = ''; return; }
+
+  const scores = rows.map(r => parseFloat(r.score)).filter(n => !isNaN(n) && n > 0);
+  const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : 'N/D';
+  const recs = rows.filter(r => r.recom.toLowerCase().replace('í','i') === 'si').length;
+  const pos = rows.filter(r => r.senti.toLowerCase().includes('positivo')).length;
+  const neg = rows.filter(r => r.senti.toLowerCase().includes('negativo')).length;
+  const comments = rows.filter(r => r.comment).map(r => '- [' + (r.senti||'?') + '] ' + r.comment).join('\n');
+
+  const prompt = `Eres el gerente de operaciones de Casa Yuma, un hotel boutique de playa en Puerto Escondido, Oaxaca. Analiza las siguientes encuestas de satisfacción de ${mesLabel} y genera un resumen ejecutivo breve en español para compartir con el equipo.
+
+DATOS DEL PERÍODO:
+- Total huéspedes: ${rows.length}
+- Score promedio: ${avg}/8
+- Recomendarían: ${Math.round(recs/rows.length*100)}%
+- Comentarios positivos: ${pos} | Negativos: ${neg}
+
+COMENTARIOS:
+${comments}
+
+Genera un resumen de 3 secciones:
+1. Panorama general del mes (2-3 oraciones)
+2. Puntos destacados positivos (bullet points)
+3. Áreas de mejora o atención (bullet points)
+
+Sé directo y accionable. Máximo 250 palabras.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const text = data?.content?.[0]?.text || 'No se pudo generar el resumen.';
+    summaryEl.textContent = text;
+    summaryEl.className = '';
+  } catch(e) {
+    summaryEl.textContent = 'Error al conectar con el servicio de IA.';
+    summaryEl.className = '';
+  }
+});
+document.getElementById('btn-close-ai').addEventListener('click', () =>
+  document.getElementById('ai-panel').classList.remove('visible'));
+document.getElementById('btn-copy-ai').addEventListener('click', () => {
+  const text = document.getElementById('ai-summary-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btn-copy-ai');
+    btn.textContent = '¡Copiado!'; setTimeout(() => btn.textContent = 'Copiar texto', 2000);
+  });
+});
+
+// ── EXPORT CSV ───────────────────────────────────────────────
+document.getElementById('btn-export').addEventListener('click', () => {
+  const rows = currentFiltered;
+  if (!rows.length) return;
+  const headers = ['Fecha','Nombre','Hab.','Score','Sentimiento','Área','Servicio','Limpieza','Mantenimiento','Instalaciones','¿Recomendaría?','¿Desea info?','Comentario'];
+  const escape = v => '"' + (v||'').replace(/"/g,'""') + '"';
+  const lines = [headers.join(','), ...rows.map(r =>
+    [r.fecha,r.nombre,r.hab,r.score,r.senti,r.area,r.servicio,r.limpieza,r.mant,r.inst,r.recom,r.desea,r.comment].map(escape).join(',')
+  )];
+  const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const mesLabel = (document.getElementById('filter-mes').selectedOptions[0]?.textContent || 'comentarios').replace(' ','_');
+  a.href = url; a.download = 'CasaYuma_' + mesLabel + '.csv';
+  a.click(); URL.revokeObjectURL(url);
+});
+
+// ── PASSWORD ─────────────────────────────────────────────────
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 const correctHash = sha256('Sonrie26');
-
 function checkPass() {
-  const val = document.getElementById('lock-input').value;
-  if (!val) return;
+  const val = document.getElementById('lock-input').value; if (!val) return;
   sha256(val).then(hash => correctHash.then(correct => {
     if (hash === correct) {
       document.getElementById('lock-screen').classList.add('hidden');
-      sessionStorage.setItem('cy_auth', hash);
-      loadData();
+      sessionStorage.setItem('cy_auth', hash); loadData();
     } else {
       document.getElementById('lock-error').textContent = 'Contraseña incorrecta';
-      document.getElementById('lock-input').value = '';
-      document.getElementById('lock-input').focus();
+      document.getElementById('lock-input').value = ''; document.getElementById('lock-input').focus();
     }
   }));
 }
 document.getElementById('lock-btn').addEventListener('click', checkPass);
-document.getElementById('lock-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPass(); });
+document.getElementById('lock-input').addEventListener('keydown', e => { if (e.key==='Enter') checkPass(); });
 correctHash.then(correct => {
   if (sessionStorage.getItem('cy_auth') === correct) {
-    document.getElementById('lock-screen').classList.add('hidden');
-    loadData();
+    document.getElementById('lock-screen').classList.add('hidden'); loadData();
   }
 });
 </script>
