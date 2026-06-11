@@ -7,470 +7,114 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --gold: #B08D57;
-    --gold-light: #D4B483;
-    --gold-pale: #F5EDD9;
-    --teal: #3D7A6E;
-    --teal-light: #5A9E91;
-    --teal-pale: #E8F4F1;
-    --sand: #F7F3EC;
-    --sand-dark: #EDE6D9;
-    --text-primary: #2A2419;
-    --text-secondary: #6B5F4E;
-    --text-muted: #9E9183;
-    --border: #DDD5C4;
-    --white: #FFFFFF;
-    --positive-bg: #E8F4F1;
-    --positive-text: #2A5E54;
-    --negative-bg: #FAF0ED;
-    --negative-text: #7A3520;
-    --neutral-bg: #F5F0E8;
-    --neutral-text: #6B5F4E;
+    --gold: #B08D57; --gold-light: #D4B483; --gold-pale: #F5EDD9;
+    --teal: #3D7A6E; --teal-light: #5A9E91; --teal-pale: #E8F4F1;
+    --sand: #F7F3EC; --sand-dark: #EDE6D9;
+    --text-primary: #2A2419; --text-secondary: #6B5F4E; --text-muted: #9E9183;
+    --border: #DDD5C4; --white: #FFFFFF;
+    --positive-bg: #E8F4F1; --positive-text: #2A5E54;
+    --negative-bg: #FAF0ED; --negative-text: #7A3520;
+    --neutral-bg: #F5F0E8; --neutral-text: #6B5F4E;
   }
+  body { font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--text-primary); font-size: 13px; line-height: 1.5; min-height: 100vh; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--sand);
-    color: var(--text-primary);
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
+  /* LOCK SCREEN */
+  #lock-screen { position: fixed; inset: 0; background: var(--text-primary); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; gap: 24px; }
+  #lock-screen.hidden { display: none; }
+  .lock-logo { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 400; color: var(--gold-light); letter-spacing: 0.06em; text-align: center; }
+  .lock-subtitle { font-size: 12px; color: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase; text-align: center; margin-top: -18px; }
+  .lock-box { display: flex; flex-direction: column; gap: 12px; align-items: center; width: 280px; }
+  #lock-input { width: 100%; border: 1px solid #4A3F2F; border-radius: 8px; background: #1E1810; color: var(--gold-light); font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 10px 16px; text-align: center; letter-spacing: 0.08em; outline: none; }
+  #lock-input:focus { border-color: var(--gold); }
+  #lock-input::placeholder { color: #5A4F3E; }
+  #lock-btn { width: 100%; padding: 10px; background: var(--gold); color: var(--text-primary); border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+  #lock-btn:hover { background: var(--gold-light); }
+  #lock-error { font-size: 12px; color: #C07055; min-height: 16px; text-align: center; }
 
-  header {
-    background: var(--text-primary);
-    padding: 28px 40px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 16px;
-  }
+  /* HEADER */
+  header { background: var(--text-primary); padding: 22px 40px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .header-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--gold-light); letter-spacing: 0.04em; }
+  .header-subtitle { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
+  .header-meta { font-size: 11px; color: var(--text-muted); text-align: right; }
 
-  .header-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: var(--gold-light);
-    letter-spacing: 0.04em;
-  }
-
-  .header-subtitle {
-    font-size: 12px;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  .header-meta {
-    font-size: 12px;
-    color: var(--text-muted);
-    text-align: right;
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 24px;
-  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
 
   /* KPI BAR */
-  .kpi-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    margin-bottom: 28px;
-  }
-
-  .kpi-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 18px;
-    text-align: center;
-  }
-
-  .kpi-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 6px;
-  }
-
-  .kpi-value {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 30px;
-    font-weight: 600;
-    color: var(--text-primary);
-    line-height: 1;
-  }
-
+  .kpi-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .kpi-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; text-align: center; }
+  .kpi-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
+  .kpi-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--text-primary); line-height: 1; }
   .kpi-value.gold { color: var(--gold); }
   .kpi-value.teal { color: var(--teal); }
 
   /* FILTERS */
-  .filters {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .filter-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .filter-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    white-space: nowrap;
-  }
-
-  select, input[type="text"] {
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--sand);
-    color: var(--text-primary);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    padding: 6px 10px;
-    cursor: pointer;
-    outline: none;
-  }
-
-  select:focus, input[type="text"]:focus {
-    border-color: var(--gold);
-  }
-
-  input[type="text"] {
-    width: 200px;
-  }
-
-  .filter-reset {
-    margin-left: auto;
-    font-size: 12px;
-    color: var(--text-muted);
-    cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-    background: none;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-  }
-
+  .filters { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+  .filter-group { display: flex; align-items: center; gap: 7px; }
+  .filter-label { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+  select, input[type="text"] { border: 1px solid var(--border); border-radius: 6px; background: var(--sand); color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 5px 9px; cursor: pointer; outline: none; }
+  select:focus, input[type="text"]:focus { border-color: var(--gold); }
+  input[type="text"] { width: 180px; }
+  .filter-reset { margin-left: auto; font-size: 11px; color: var(--text-muted); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; background: none; border: none; font-family: 'DM Sans', sans-serif; }
   .filter-reset:hover { color: var(--gold); }
 
-  /* COUNT DISPLAY */
-  .results-info {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 14px;
-    padding-left: 2px;
-  }
+  .results-info { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; padding-left: 2px; }
 
-  /* CARDS GRID */
-  .cards-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  /* MONTH SECTION */
+  .month-section { margin-bottom: 28px; }
+  .month-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .month-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--text-primary); }
+  .month-stats { display: flex; gap: 10px; align-items: center; }
+  .month-pill { font-size: 11px; padding: 2px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); background: var(--sand); white-space: nowrap; }
+  .month-pill.pos { background: var(--positive-bg); border-color: #A0CFC8; color: var(--positive-text); }
+  .month-pill.neg { background: var(--negative-bg); border-color: #C0A090; color: var(--negative-text); }
+  .month-divider { flex: 1; height: 1px; background: var(--border); }
 
-  .card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 22px;
-    display: grid;
-    grid-template-columns: 180px 1fr auto;
-    gap: 20px;
-    align-items: start;
-    transition: border-color 0.15s;
-  }
-
+  /* CARDS */
+  .cards-grid { display: flex; flex-direction: column; gap: 8px; }
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; display: grid; grid-template-columns: 160px 1fr auto; gap: 16px; align-items: start; transition: border-color 0.15s; }
   .card:hover { border-color: var(--gold-light); }
-
-  .card.negative { border-left: 3px solid var(--negative-text); }
+  .card.negative { border-left: 3px solid #C07055; }
   .card.positive { border-left: 3px solid var(--teal-light); }
   .card.neutral { border-left: 3px solid var(--border); }
 
-  .card-left {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+  .card-left { display: flex; flex-direction: column; gap: 4px; }
+  .guest-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
+  .card-date { font-size: 11px; color: var(--text-muted); }
+  .card-room { font-size: 11px; color: var(--text-secondary); }
+  .card-ratings { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+  .rating-pill { font-size: 10px; padding: 2px 7px; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); background: var(--sand); white-space: nowrap; }
+  .rating-pill.bueno { background: #FFF8EA; border-color: #D4A84B; color: #7A5E1A; }
+  .rating-pill.malo { background: var(--negative-bg); border-color: #C0674A; color: var(--negative-text); }
 
-  .guest-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--text-primary);
-    line-height: 1.2;
-  }
+  .card-middle { display: flex; flex-direction: column; gap: 6px; }
+  .comment-text { font-size: 13px; color: var(--text-primary); line-height: 1.6; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+  .comment-translated { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-style: italic; }
+  .tags-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+  .tag { font-size: 10px; padding: 2px 9px; border-radius: 20px; border: 1px solid transparent; font-family: 'DM Sans', sans-serif; }
+  .tag.area { background: var(--teal-pale); border-color: #A0CFC8; color: var(--positive-text); }
+  .tag.area-secondary { background: var(--gold-pale); border-color: #D4B483; color: #6B4E1A; }
 
-  .card-date {
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-
-  .card-room {
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-
-  .card-ratings {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 4px;
-  }
-
-  .rating-pill {
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    background: var(--sand);
-    white-space: nowrap;
-  }
-
-  .rating-pill.bueno {
-    background: #FFF8EA;
-    border-color: #D4A84B;
-    color: #7A5E1A;
-  }
-
-  .rating-pill.malo {
-    background: var(--negative-bg);
-    border-color: #C0674A;
-    color: var(--negative-text);
-  }
-
-  .card-middle {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .comment-text {
-    font-size: 14px;
-    color: var(--text-primary);
-    line-height: 1.65;
-    font-style: italic;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 15px;
-  }
-
-  .comment-empty {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-style: italic;
-  }
-
-  .tags-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
-  }
-
-  .tag {
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid transparent;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .tag.area {
-    background: var(--teal-pale);
-    border-color: #A0CFC8;
-    color: var(--positive-text);
-  }
-
-  .tag.area-secondary {
-    background: var(--gold-pale);
-    border-color: #D4B483;
-    color: #6B4E1A;
-  }
-
-  .card-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-    min-width: 90px;
-  }
-
-  .score-badge {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 600;
-    line-height: 1;
-    color: var(--text-primary);
-  }
-
-  .score-badge span {
-    font-size: 14px;
-    color: var(--text-muted);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-  }
-
-  .sentiment-badge {
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-  }
-
-  .sentiment-badge.positivo {
-    background: var(--positive-bg);
-    color: var(--positive-text);
-  }
-
-  .sentiment-badge.negativo {
-    background: var(--negative-bg);
-    color: var(--negative-text);
-  }
-
-  .sentiment-badge.sin {
-    background: var(--neutral-bg);
-    color: var(--neutral-text);
-  }
-
-  .recomienda-row {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-align: right;
-  }
-
+  .card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; min-width: 80px; }
+  .score-badge { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; line-height: 1; color: var(--text-primary); }
+  .score-badge span { font-size: 12px; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-weight: 300; }
+  .sentiment-badge { font-size: 10px; padding: 2px 9px; border-radius: 20px; font-weight: 500; }
+  .sentiment-badge.positivo { background: var(--positive-bg); color: var(--positive-text); }
+  .sentiment-badge.negativo { background: var(--negative-bg); color: var(--negative-text); }
+  .sentiment-badge.sin { background: var(--neutral-bg); color: var(--neutral-text); }
+  .recomienda-row { font-size: 10px; color: var(--text-muted); text-align: right; }
   .recomienda-row.si { color: var(--teal); }
 
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-muted);
-  }
+  .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); font-size: 14px; }
+  .loading-state { text-align: center; padding: 50px 20px; color: var(--text-muted); font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; }
+  .error-state { background: var(--negative-bg); border: 1px solid #C0674A; border-radius: 10px; padding: 18px 22px; color: var(--negative-text); font-size: 13px; }
 
-  .empty-state p { font-size: 15px; }
-
-  .loading-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-muted);
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-style: italic;
-  }
-
-  .error-state {
-    background: var(--negative-bg);
-    border: 1px solid #C0674A;
-    border-radius: 10px;
-    padding: 20px 24px;
-    color: var(--negative-text);
-    font-size: 14px;
-  }
-
-  @media (max-width: 720px) {
-    header { padding: 20px 16px; }
-    .container { padding: 20px 14px; }
-    .card { grid-template-columns: 1fr; gap: 12px; }
+  @media (max-width: 700px) {
+    header { padding: 18px 14px; }
+    .container { padding: 16px 12px; }
+    .card { grid-template-columns: 1fr; gap: 10px; }
     .card-right { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
-    input[type="text"] { width: 140px; }
-  }
-
-  #lock-screen {
-    position: fixed;
-    inset: 0;
-    background: var(--text-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  #lock-screen.hidden { display: none; }
-
-  .lock-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 32px;
-    font-weight: 400;
-    color: var(--gold-light);
-    letter-spacing: 0.06em;
-    text-align: center;
-  }
-
-  .lock-subtitle {
-    font-size: 12px;
-    color: var(--text-muted);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-align: center;
-    margin-top: -18px;
-  }
-
-  .lock-box {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-    width: 280px;
-  }
-
-  #lock-input {
-    width: 100%;
-    border: 1px solid #4A3F2F;
-    border-radius: 8px;
-    background: #1E1810;
-    color: var(--gold-light);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    padding: 10px 16px;
-    text-align: center;
-    letter-spacing: 0.08em;
-    outline: none;
-  }
-
-  #lock-input:focus { border-color: var(--gold); }
-
-  #lock-input::placeholder { color: #5A4F3E; letter-spacing: 0.04em; }
-
-  #lock-btn {
-    width: 100%;
-    padding: 10px;
-    background: var(--gold);
-    color: var(--text-primary);
-    border: none;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    letter-spacing: 0.04em;
-    transition: background 0.15s;
-  }
-
-  #lock-btn:hover { background: var(--gold-light); }
-
-  #lock-error {
-    font-size: 12px;
-    color: #C07055;
-    min-height: 16px;
-    text-align: center;
+    input[type="text"] { width: 130px; }
   }
 </style>
 </head>
@@ -491,91 +135,85 @@
     <div class="header-title">Casa Yuma</div>
     <div class="header-subtitle">Registro de encuestas de satisfacción</div>
   </div>
-  <div class="header-meta" id="last-updated">Cargando datos…</div>
+  <div class="header-meta" id="last-updated">Cargando…</div>
 </header>
 
 <div class="container">
-
-  <div class="kpi-bar" id="kpi-bar">
-    <div class="kpi-card">
-      <div class="kpi-label">Total respuestas</div>
-      <div class="kpi-value" id="kpi-total">—</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Score promedio</div>
-      <div class="kpi-value gold" id="kpi-score">—</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Nos recomendarían</div>
-      <div class="kpi-value teal" id="kpi-recomienda">—</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Comentarios positivos</div>
-      <div class="kpi-value" id="kpi-positivos">—</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Comentarios negativos</div>
-      <div class="kpi-value" id="kpi-negativos">—</div>
-    </div>
+  <div class="kpi-bar">
+    <div class="kpi-card"><div class="kpi-label">Total respuestas</div><div class="kpi-value" id="kpi-total">—</div></div>
+    <div class="kpi-card"><div class="kpi-label">Score promedio</div><div class="kpi-value gold" id="kpi-score">—</div></div>
+    <div class="kpi-card"><div class="kpi-label">Nos recomendarían</div><div class="kpi-value teal" id="kpi-recomienda">—</div></div>
+    <div class="kpi-card"><div class="kpi-label">Comentarios positivos</div><div class="kpi-value" id="kpi-positivos">—</div></div>
+    <div class="kpi-card"><div class="kpi-label">Comentarios negativos</div><div class="kpi-value" id="kpi-negativos">—</div></div>
   </div>
 
   <div class="filters">
-    <div class="filter-group">
-      <label class="filter-label">Sentimiento</label>
-      <select id="filter-sentimiento">
-        <option value="">Todos</option>
-        <option value="Positivo">Positivo</option>
-        <option value="Negativo">Negativo</option>
-        <option value="Sin comentario">Sin comentario</option>
-      </select>
+    <div class="filter-group"><label class="filter-label">Sentimiento</label>
+      <select id="filter-sentimiento"><option value="">Todos</option><option value="Positivo">Positivo</option><option value="Negativo">Negativo</option><option value="Sin comentario">Sin comentario</option></select>
     </div>
-    <div class="filter-group">
-      <label class="filter-label">Área</label>
-      <select id="filter-area">
-        <option value="">Todas</option>
-      </select>
+    <div class="filter-group"><label class="filter-label">Área</label>
+      <select id="filter-area"><option value="">Todas</option></select>
     </div>
-    <div class="filter-group">
-      <label class="filter-label">Score mín.</label>
-      <select id="filter-score">
-        <option value="">Cualquiera</option>
-        <option value="8">8+</option>
-        <option value="7">7+</option>
-        <option value="6">6+</option>
-      </select>
+    <div class="filter-group"><label class="filter-label">Score mín.</label>
+      <select id="filter-score"><option value="">Cualquiera</option><option value="8">8</option><option value="7">7+</option><option value="6">6+</option></select>
     </div>
-    <div class="filter-group">
-      <label class="filter-label">Buscar</label>
+    <div class="filter-group"><label class="filter-label">Buscar</label>
       <input type="text" id="filter-search" placeholder="Nombre o comentario…">
     </div>
     <button class="filter-reset" id="btn-reset">Limpiar filtros</button>
   </div>
 
   <div class="results-info" id="results-info"></div>
-
-  <div class="cards-grid" id="cards-grid">
-    <div class="loading-state">Cargando comentarios…</div>
-  </div>
-
+  <div id="main-content"><div class="loading-state">Cargando comentarios…</div></div>
 </div>
 
 <script>
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmqLWbM4T9YiVuW5-bch21_FTuYbMIMqHuq1nsEzOKaqAOTT_R2Iyy0VtYsOmTOfQhqEcDwV90-UH-/pub?output=csv';
+
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+// Simple English detector: if >40% of word characters are ASCII letters and no Spanish-specific chars
+function isEnglish(text) {
+  if (!text || text.length < 10) return false;
+  const hasSpanish = /[áéíóúüñ¿¡]/i.test(text);
+  if (hasSpanish) return false;
+  const words = text.trim().split(/\s+/);
+  if (words.length < 3) return false;
+  const engWords = ['the','and','was','our','very','great','good','but','we','it','is','are','for','this','with','had','have','were','not','all','an','its','been','my','me','so','at','us','no','of','to','a','in','on','i'];
+  const lower = text.toLowerCase();
+  const matches = engWords.filter(w => new RegExp('\\b' + w + '\\b').test(lower)).length;
+  return matches >= 2;
+}
+
+async function translateText(text) {
+  if (!text || !isEnglish(text)) return null;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        messages: [{ role: 'user', content: 'Translate this hotel guest comment to Spanish. Return ONLY the translation, nothing else: ' + text }]
+      })
+    });
+    const data = await res.json();
+    return data?.content?.[0]?.text || null;
+  } catch { return null; }
+}
 
 let allRows = [];
 
 function parseCSV(text) {
   const lines = text.split('\n');
   const rows = [];
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+  for (const line of lines) {
     const cols = [];
-    let cur = '';
-    let inQuote = false;
+    let cur = '', inQ = false;
     for (let j = 0; j < line.length; j++) {
       const ch = line[j];
-      if (ch === '"') { inQuote = !inQuote; }
-      else if (ch === ',' && !inQuote) { cols.push(cur.trim()); cur = ''; }
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
       else { cur += ch; }
     }
     cols.push(cur.trim());
@@ -591,161 +229,208 @@ async function loadData() {
     const text = await res.text();
     const rows = parseCSV(text);
 
-    // Find header row (row with "Nombre Huésped")
-    let headerIdx = -1;
-    for (let i = 0; i < rows.length; i++) {
-      if (rows[i].some(c => c.includes('Nombre') || c.includes('Fecha'))) {
-        headerIdx = i;
-        break;
-      }
-    }
-    if (headerIdx < 0) throw new Error('No se encontró la fila de encabezados');
+    // Row 4 (index 3) is the real header
+    const headers = rows[3].map(h => h.toLowerCase().replace(/[\n\r]/g,' ').trim());
 
-    const headers = rows[headerIdx].map(h => h.toLowerCase().replace(/[^a-záéíóúüñ0-9]/gi, '_'));
-    const dataRows = rows.slice(headerIdx + 1).filter(r => r.some(c => c.length > 0));
+    // Find column indices by keyword
+    const ci = (kw) => headers.findIndex(h => h.includes(kw));
+    const COL = {
+      fecha:     ci('fecha'),
+      nombre:    ci('nombre'),
+      tel:       ci('tel'),
+      servicio:  ci('servicio'),
+      limpieza:  ci('limpieza'),
+      mant:      ci('mantenimiento'),
+      inst:      ci('instalaciones'),
+      desea:     ci('desea'),
+      recom:     ci('recomend'),
+      comment:   ci('comentario'),
+      hab:       ci('habitaci'),
+      score:     ci('score'),
+      senti:     ci('sentimiento'),
+      area:      ci('área del'),
+      area2:     ci('área\nsecundaria') >= 0 ? ci('área\nsecundaria') : headers.findIndex((h,i) => h.includes('secundaria') && i !== ci('sentimiento\nsecundario')),
+      senti2:    headers.findIndex(h => h.includes('sentimiento') && h.includes('secund'))
+    };
 
-    allRows = dataRows.map(r => {
-      const obj = {};
-      headers.forEach((h, i) => { obj[h] = (r[i] || '').trim(); });
-      return obj;
-    }).filter(r => r[headers[0]] || r[headers[1]]);
+    // Data starts at row index 4, skip rows where fecha is not a date pattern
+    const dateRe = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+    allRows = rows.slice(4)
+      .filter(r => r[COL.fecha] && dateRe.test(r[COL.fecha].trim()))
+      .map(r => ({
+        fecha:    r[COL.fecha]?.trim() || '',
+        nombre:   r[COL.nombre]?.trim() || '',
+        tel:      r[COL.tel]?.trim() || '',
+        servicio: r[COL.servicio]?.trim() || '',
+        limpieza: r[COL.limpieza]?.trim() || '',
+        mant:     r[COL.mant]?.trim() || '',
+        inst:     r[COL.inst]?.trim() || '',
+        desea:    r[COL.desea]?.trim() || '',
+        recom:    r[COL.recom]?.trim() || '',
+        comment:  r[COL.comment]?.trim() || '',
+        hab:      r[COL.hab]?.trim() || '',
+        score:    r[COL.score]?.trim() || '',
+        senti:    r[COL.senti]?.trim() || '',
+        area:     r[COL.area]?.trim() || '',
+        area2:    COL.area2 >= 0 ? r[COL.area2]?.trim() || '' : '',
+        translated: null
+      }));
 
-    // Extract unique areas for filter
-    const areas = [...new Set(allRows.map(r => getField(r, ['rea_del_comentario', 'área_del_comentario', 'area_del_comentario'])).filter(Boolean))].sort();
+    // Populate area filter
+    const areas = [...new Set(allRows.map(r => r.area).filter(Boolean))].sort();
     const areaSelect = document.getElementById('filter-area');
-    areas.forEach(a => {
-      const opt = document.createElement('option');
-      opt.value = a; opt.textContent = a;
-      areaSelect.appendChild(opt);
-    });
+    areas.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; areaSelect.appendChild(o); });
 
     updateKPIs(allRows);
-    renderCards(allRows);
+    renderAll(allRows);
 
-    const lastDate = allRows[0] ? (getField(allRows[0], ['fecha']) || '') : '';
-    document.getElementById('last-updated').textContent = lastDate ? 'Última entrada: ' + lastDate : 'Datos actualizados';
+    const lastDate = allRows[0]?.fecha || '';
+    document.getElementById('last-updated').textContent = lastDate ? 'Última entrada: ' + lastDate : '';
 
-  } catch (err) {
-    document.getElementById('cards-grid').innerHTML = '<div class="error-state">Error al cargar datos: ' + err.message + '<br><small>Verificá que el CSV de Google Sheets esté publicado como "Anyone with the link".</small></div>';
+    // Translate English comments in background
+    for (const row of allRows) {
+      if (isEnglish(row.comment)) {
+        translateText(row.comment).then(t => {
+          if (t) { row.translated = t; refreshTranslation(row); }
+        });
+      }
+    }
+
+  } catch(err) {
+    document.getElementById('main-content').innerHTML = '<div class="error-state">Error al cargar datos: ' + err.message + '</div>';
   }
 }
 
-function getField(row, candidates) {
-  for (const k of candidates) {
-    const found = Object.keys(row).find(key => key.includes(k.toLowerCase().replace(/[^a-z0-9]/g, '')));
-    if (found && row[found]) return row[found];
-  }
-  return '';
-}
-
-function flexGet(row, partials) {
-  for (const p of partials) {
-    const key = Object.keys(row).find(k => k.toLowerCase().replace(/[^a-z0-9]/g,'').includes(p.replace(/[^a-z0-9]/g,'')));
-    if (key !== undefined) return row[key] || '';
-  }
-  return '';
+function refreshTranslation(row) {
+  // Find the card by name+date and update translation span
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    if (card.dataset.key === (row.nombre + '|' + row.fecha)) {
+      const el = card.querySelector('.comment-translated');
+      if (el && row.translated) { el.textContent = '↳ ' + row.translated; el.style.display = 'block'; }
+    }
+  });
 }
 
 function updateKPIs(rows) {
   document.getElementById('kpi-total').textContent = rows.length;
-  const scores = rows.map(r => parseFloat(flexGet(r, ['score','scor']))).filter(n => !isNaN(n));
-  const avg = scores.length ? (scores.reduce((a,b) => a+b,0)/scores.length).toFixed(1) : '—';
-  document.getElementById('kpi-score').textContent = avg;
-  const recs = rows.filter(r => (flexGet(r, ['recomendaria','recomend']) || '').toLowerCase().trim() === 'sí' || (flexGet(r, ['recomendaria','recomend']) || '').toLowerCase().trim() === 'si').length;
-  document.getElementById('kpi-recomienda').textContent = rows.length ? Math.round(recs / rows.length * 100) + '%' : '—';
-  const pos = rows.filter(r => (flexGet(r, ['sentimiento','senti']) || '').toLowerCase().includes('positivo')).length;
-  const neg = rows.filter(r => (flexGet(r, ['sentimiento','senti']) || '').toLowerCase().includes('negativo')).length;
-  document.getElementById('kpi-positivos').textContent = pos;
-  document.getElementById('kpi-negativos').textContent = neg;
+  const scores = rows.map(r => parseFloat(r.score)).filter(n => !isNaN(n) && n > 0);
+  document.getElementById('kpi-score').textContent = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '—';
+  const recs = rows.filter(r => r.recom.toLowerCase().replace('í','i') === 'si').length;
+  document.getElementById('kpi-recomienda').textContent = rows.length ? Math.round(recs/rows.length*100)+'%' : '—';
+  document.getElementById('kpi-positivos').textContent = rows.filter(r => r.senti.toLowerCase().includes('positivo')).length;
+  document.getElementById('kpi-negativos').textContent = rows.filter(r => r.senti.toLowerCase().includes('negativo')).length;
 }
 
-function renderCards(rows) {
-  const grid = document.getElementById('cards-grid');
-  document.getElementById('results-info').textContent = rows.length + ' ' + (rows.length === 1 ? 'registro' : 'registros');
+function parseDate(str) {
+  const p = str.split('/');
+  if (p.length === 3) return new Date(+p[2], +p[1]-1, +p[0]);
+  return null;
+}
+
+function renderAll(rows) {
+  const info = document.getElementById('results-info');
+  const main = document.getElementById('main-content');
+  info.textContent = rows.length + (rows.length === 1 ? ' registro' : ' registros');
 
   if (!rows.length) {
-    grid.innerHTML = '<div class="empty-state"><p>No hay registros que coincidan con los filtros.</p></div>';
+    main.innerHTML = '<div class="empty-state">No hay registros que coincidan.</div>';
     return;
   }
 
-  grid.innerHTML = rows.map(r => {
-    const nombre = flexGet(r, ['nombre','name']);
-    const fecha = flexGet(r, ['fecha','date']);
-    const hab = flexGet(r, ['habitaci','room','hab']);
-    const servicio = flexGet(r, ['servicio','service']);
-    const limpieza = flexGet(r, ['limpieza','clean']);
-    const mant = flexGet(r, ['mantenimiento','mant']);
-    const inst = flexGet(r, ['instalaciones','instal']);
-    const comentario = flexGet(r, ['comentario','comment']);
-    const score = flexGet(r, ['score','scor']);
-    const sentimiento = flexGet(r, ['sentimiento','senti']);
-    const area = flexGet(r, ['reacoment','areacoment','areadel','areadelcoment']);
-    const area2 = flexGet(r, ['seasecund','areasecund','reascund']);
-    const recomienda = flexGet(r, ['recomendaria','recomend']);
+  // Group by month-year, newest first
+  const groups = {};
+  rows.forEach(r => {
+    const d = parseDate(r.fecha);
+    if (!d) return;
+    const key = d.getFullYear() + '-' + String(d.getMonth()).padStart(2,'0');
+    if (!groups[key]) groups[key] = { label: MESES[d.getMonth()] + ' ' + d.getFullYear(), rows: [] };
+    groups[key].rows.push(r);
+  });
+  const sortedKeys = Object.keys(groups).sort((a,b) => b.localeCompare(a));
 
-    const sentLow = sentimiento.toLowerCase();
-    const sentClass = sentLow.includes('positivo') ? 'positive' : sentLow.includes('negativo') ? 'negative' : 'neutral';
-    const sentBadgeClass = sentLow.includes('positivo') ? 'positivo' : sentLow.includes('negativo') ? 'negativo' : 'sin';
-    const sentLabel = sentLow.includes('positivo') ? 'Positivo' : sentLow.includes('negativo') ? 'Negativo' : 'Sin sentimiento';
+  main.innerHTML = sortedKeys.map(key => {
+    const g = groups[key];
+    const pos = g.rows.filter(r => r.senti.toLowerCase().includes('positivo')).length;
+    const neg = g.rows.filter(r => r.senti.toLowerCase().includes('negativo')).length;
+    const scores = g.rows.map(r => parseFloat(r.score)).filter(n => !isNaN(n) && n > 0);
+    const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '';
 
-    const ratingPill = (label, val) => {
-      if (!val) return '';
-      const low = val.toLowerCase();
-      const cls = low === 'bueno' ? 'bueno' : low === 'malo' ? 'malo' : '';
-      return '<span class="rating-pill ' + cls + '">' + label + ': ' + val + '</span>';
-    };
-
-    const recomClass = (recomienda || '').toLowerCase().trim() === 'sí' || (recomienda || '').toLowerCase().trim() === 'si' ? 'si' : '';
-
-    return '<div class="card ' + sentClass + '">' +
-      '<div class="card-left">' +
-        '<div class="guest-name">' + (nombre || 'Huésped') + '</div>' +
-        '<div class="card-date">' + fecha + '</div>' +
-        (hab ? '<div class="card-room">Hab. ' + hab + '</div>' : '') +
-        '<div class="card-ratings">' +
-          ratingPill('Servicio', servicio) +
-          ratingPill('Limpieza', limpieza) +
-          ratingPill('Mantenimiento', mant) +
-          ratingPill('Instalaciones', inst) +
+    return '<div class="month-section">' +
+      '<div class="month-header">' +
+        '<div class="month-title">' + g.label + '</div>' +
+        '<div class="month-stats">' +
+          '<span class="month-pill">' + g.rows.length + ' huéspedes</span>' +
+          (avg ? '<span class="month-pill">⌀ ' + avg + '/8</span>' : '') +
+          (pos ? '<span class="month-pill pos">' + pos + ' positivos</span>' : '') +
+          (neg ? '<span class="month-pill neg">' + neg + ' negativos</span>' : '') +
         '</div>' +
+        '<div class="month-divider"></div>' +
       '</div>' +
-      '<div class="card-middle">' +
-        (comentario ? '<div class="comment-text">"' + comentario + '"</div>' : '<div class="comment-empty">Sin comentario</div>') +
-        '<div class="tags-row">' +
-          (area ? '<span class="tag area">' + area + '</span>' : '') +
-          (area2 ? '<span class="tag area-secondary">' + area2 + '</span>' : '') +
-        '</div>' +
-      '</div>' +
-      '<div class="card-right">' +
-        (score ? '<div class="score-badge">' + score + '<span>/8</span></div>' : '') +
-        '<span class="sentiment-badge ' + sentBadgeClass + '">' + sentLabel + '</span>' +
-        (recomienda ? '<div class="recomienda-row ' + recomClass + '">Recomendaría: ' + recomienda + '</div>' : '') +
-      '</div>' +
+      '<div class="cards-grid">' + g.rows.map(r => cardHTML(r)).join('') + '</div>' +
     '</div>';
   }).join('');
 }
 
+function cardHTML(r) {
+  const sentLow = r.senti.toLowerCase();
+  const sentClass = sentLow.includes('positivo') ? 'positive' : sentLow.includes('negativo') ? 'negative' : 'neutral';
+  const sentBadge = sentLow.includes('positivo') ? 'positivo' : sentLow.includes('negativo') ? 'negativo' : 'sin';
+  const sentLabel = sentLow.includes('positivo') ? 'Positivo' : sentLow.includes('negativo') ? 'Negativo' : 'Sin sentimiento';
+
+  const pill = (lbl, val) => {
+    if (!val) return '';
+    const lo = val.toLowerCase();
+    const cls = lo === 'bueno' ? 'bueno' : lo === 'malo' ? 'malo' : '';
+    return '<span class="rating-pill ' + cls + '">' + lbl + ': ' + val + '</span>';
+  };
+
+  const recClass = r.recom.toLowerCase().replace('í','i') === 'si' ? 'si' : '';
+  const showTranslated = r.translated ? 'block' : 'none';
+  const translatedText = r.translated ? '↳ ' + r.translated : '';
+
+  return '<div class="card ' + sentClass + '" data-key="' + (r.nombre + '|' + r.fecha).replace(/"/g,'') + '">' +
+    '<div class="card-left">' +
+      '<div class="guest-name">' + (r.nombre || 'Huésped') + '</div>' +
+      '<div class="card-date">' + r.fecha + '</div>' +
+      (r.hab ? '<div class="card-room">Hab. ' + r.hab + '</div>' : '') +
+      '<div class="card-ratings">' +
+        pill('Servicio', r.servicio) + pill('Limpieza', r.limpieza) +
+        pill('Mant.', r.mant) + pill('Inst.', r.inst) +
+      '</div>' +
+    '</div>' +
+    '<div class="card-middle">' +
+      (r.comment
+        ? '<div class="comment-text">"' + r.comment + '"</div>' +
+          '<div class="comment-translated" style="display:' + showTranslated + '">' + translatedText + '</div>'
+        : '') +
+      '<div class="tags-row">' +
+        (r.area ? '<span class="tag area">' + r.area + '</span>' : '') +
+        (r.area2 ? '<span class="tag area-secondary">' + r.area2 + '</span>' : '') +
+      '</div>' +
+    '</div>' +
+    '<div class="card-right">' +
+      (r.score && parseFloat(r.score) > 0 ? '<div class="score-badge">' + r.score + '<span>/8</span></div>' : '') +
+      '<span class="sentiment-badge ' + sentBadge + '">' + sentLabel + '</span>' +
+      (r.recom ? '<div class="recomienda-row ' + recClass + '">Recomendaría: ' + r.recom + '</div>' : '') +
+    '</div>' +
+  '</div>';
+}
+
 function applyFilters() {
-  const sentFil = document.getElementById('filter-sentimiento').value.toLowerCase();
-  const areaFil = document.getElementById('filter-area').value.toLowerCase();
-  const scoreFil = parseFloat(document.getElementById('filter-score').value) || 0;
-  const searchFil = document.getElementById('filter-search').value.toLowerCase().trim();
-
+  const s = document.getElementById('filter-sentimiento').value.toLowerCase();
+  const a = document.getElementById('filter-area').value.toLowerCase();
+  const sc = parseFloat(document.getElementById('filter-score').value) || 0;
+  const q = document.getElementById('filter-search').value.toLowerCase().trim();
   const filtered = allRows.filter(r => {
-    const sent = (flexGet(r, ['sentimiento','senti']) || '').toLowerCase();
-    const area = (flexGet(r, ['reacoment','areacoment','areadel','areadelcoment']) || '').toLowerCase();
-    const score = parseFloat(flexGet(r, ['score','scor'])) || 0;
-    const nombre = (flexGet(r, ['nombre','name']) || '').toLowerCase();
-    const comentario = (flexGet(r, ['comentario','comment']) || '').toLowerCase();
-
-    if (sentFil && !sent.includes(sentFil.split(' ')[0])) return false;
-    if (areaFil && !area.includes(areaFil)) return false;
-    if (scoreFil && score < scoreFil) return false;
-    if (searchFil && !nombre.includes(searchFil) && !comentario.includes(searchFil)) return false;
+    if (s && !r.senti.toLowerCase().includes(s.split(' ')[0])) return false;
+    if (a && r.area.toLowerCase() !== a) return false;
+    if (sc) { const v = parseFloat(r.score); if (isNaN(v) || v < sc) return false; }
+    if (q && !r.nombre.toLowerCase().includes(q) && !r.comment.toLowerCase().includes(q)) return false;
     return true;
   });
-
-  renderCards(filtered);
+  updateKPIs(filtered);
+  renderAll(filtered);
 }
 
 document.getElementById('filter-sentimiento').addEventListener('change', applyFilters);
@@ -753,14 +438,42 @@ document.getElementById('filter-area').addEventListener('change', applyFilters);
 document.getElementById('filter-score').addEventListener('change', applyFilters);
 document.getElementById('filter-search').addEventListener('input', applyFilters);
 document.getElementById('btn-reset').addEventListener('click', () => {
-  document.getElementById('filter-sentimiento').value = '';
-  document.getElementById('filter-area').value = '';
-  document.getElementById('filter-score').value = '';
+  ['filter-sentimiento','filter-area','filter-score'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('filter-search').value = '';
-  renderCards(allRows);
+  updateKPIs(allRows);
+  renderAll(allRows);
 });
 
-const PASS_HASH_UNUSED = "";async function sha256(str){const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");}const correctHash=(async()=>sha256("Sonrie26"))();function checkPass(){const val=document.getElementById("lock-input").value;if(!val)return;sha256(val).then(hash=>{correctHash.then(correct=>{if(hash===correct){document.getElementById("lock-screen").classList.add("hidden");sessionStorage.setItem("cy_auth",hash);loadData();}else{document.getElementById("lock-error").textContent="Contraseña incorrecta";document.getElementById("lock-input").value="";document.getElementById("lock-input").focus();}});});}document.getElementById("lock-btn").addEventListener("click",checkPass);document.getElementById("lock-input").addEventListener("keydown",e=>{if(e.key==="Enter")checkPass();});correctHash.then(correct=>{if(sessionStorage.getItem("cy_auth")===correct){document.getElementById("lock-screen").classList.add("hidden");loadData();}});
+// PASSWORD
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+const correctHash = sha256('Sonrie26');
+
+function checkPass() {
+  const val = document.getElementById('lock-input').value;
+  if (!val) return;
+  sha256(val).then(hash => correctHash.then(correct => {
+    if (hash === correct) {
+      document.getElementById('lock-screen').classList.add('hidden');
+      sessionStorage.setItem('cy_auth', hash);
+      loadData();
+    } else {
+      document.getElementById('lock-error').textContent = 'Contraseña incorrecta';
+      document.getElementById('lock-input').value = '';
+      document.getElementById('lock-input').focus();
+    }
+  }));
+}
+document.getElementById('lock-btn').addEventListener('click', checkPass);
+document.getElementById('lock-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPass(); });
+correctHash.then(correct => {
+  if (sessionStorage.getItem('cy_auth') === correct) {
+    document.getElementById('lock-screen').classList.add('hidden');
+    loadData();
+  }
+});
 </script>
 </body>
 </html>
