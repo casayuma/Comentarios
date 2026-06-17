@@ -294,7 +294,7 @@ function refreshTranslation(row) {
 // ── LOAD DATA ───────────────────────────────────────────────
 async function loadData() {
   try {
-    const res = await fetch(CSV_URL);
+    const res = await fetch(CSV_URL + '&t=' + Date.now());
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const rows = parseCSV(await res.text());
     const headers = rows[3].map(h => h.toLowerCase().replace(/[\n\r]/g,' ').trim());
@@ -421,7 +421,8 @@ function renderAll(rows) {
     if (!groups[key]) groups[key] = { label: MESES[d.getMonth()] + ' ' + d.getFullYear(), key, rows: [] };
     groups[key].rows.push(r);
   });
-  Object.values(groups).forEach(g => g.rows.sort((a,b) => (parseDate(a.fecha)||0)-(parseDate(b.fecha)||0)));
+  // Sort rows within each month newest → oldest
+  Object.values(groups).forEach(g => g.rows.sort((a, b) => (parseDate(b.fecha)||0) - (parseDate(a.fecha)||0)));
   const sortedKeys = Object.keys(groups).sort((a,b) => b.localeCompare(a));
 
   main.innerHTML = sortedKeys.map(key => {
