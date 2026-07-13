@@ -118,6 +118,7 @@
   .card-left { display: flex; flex-direction: column; gap: 3px; }
   .guest-name { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
   .card-date { font-size: 11px; color: var(--text-muted); }
+  .card-folio { font-size: 10px; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 1px; }
   .collab-tag { display: inline-flex; align-items: center; gap: 4px; margin-top: 5px; font-size: 10px; padding: 2px 8px; border-radius: 20px; background: var(--collab-bg); border: 1px solid var(--collab-border); color: var(--collab-text); font-weight: 500; }
 
   .card-middle { display: flex; flex-direction: column; gap: 5px; }
@@ -295,6 +296,7 @@ async function loadData() {
     allRows = rows.slice(4)
       .filter(r => r[1] && dateRe.test(r[1].trim()))
       .map(r => ({
+        folio:    r[0]?.trim()||'',
         fecha:    r[1]?.trim()||'',
         nombre:   r[2]?.trim()||'',
         tel:      r[3]?.trim()||'',
@@ -454,6 +456,7 @@ function cardHTML(r) {
     '<div class="card-left">' +
       '<div class="guest-name">'+(r.nombre||'Huésped')+'</div>' +
       '<div class="card-date">'+r.fecha+(r.hab?' · Hab. '+r.hab:'')+'</div>' +
+      (r.folio?'<div class="card-folio">'+r.folio+'</div>':'') +
       (r.colab?'<div class="collab-tag">⭐ '+r.colab+'</div>':'') +
     '</div>' +
     '<div class="card-middle">' +
