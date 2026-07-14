@@ -404,6 +404,10 @@ function renderAll(rows) {
   Object.values(groups).forEach(g => g.rows.sort((a,b) => (parseDate(b.fecha)||0)-(parseDate(a.fecha)||0)));
   const sortedKeys = Object.keys(groups).sort((a,b) => b.localeCompare(a));
 
+  // Assign sequential display numbers across all visible rows (newest first)
+  let seq = 1;
+  sortedKeys.forEach(key => groups[key].rows.forEach(r => { r._seq = seq++; }));
+
   main.innerHTML = sortedKeys.map(key => {
     const g = groups[key];
     const pos = g.rows.filter(r => r.senti.toLowerCase().includes('positivo')).length;
@@ -456,7 +460,7 @@ function cardHTML(r) {
     '<div class="card-left">' +
       '<div class="guest-name">'+(r.nombre||'Huésped')+'</div>' +
       '<div class="card-date">'+r.fecha+(r.hab?' · Hab. '+r.hab:'')+'</div>' +
-      (r.folio?'<div class="card-folio">'+r.folio+'</div>':'') +
+      (r._seq?'<div class="card-folio">#'+r._seq+'</div>':'') +
       (r.colab?'<div class="collab-tag">⭐ '+r.colab+'</div>':'') +
     '</div>' +
     '<div class="card-middle">' +
